@@ -12,134 +12,52 @@ const AbilityScores = () => {
     charisma: 0,
   });
 
-  const [strMod, setStrMod] = useState(0);
-  const [dexMod, setDexMod] = useState(0);
-  const [agiMod, setAgiMod] = useState(0);
-  const [conMod, setConMod] = useState(0);
-  const [witMod, setWitMod] = useState(0);
-  const [intMod, setIntMod] = useState(0);
-  const [wilMod, setWilMod] = useState(0);
-  const [chaMod, setChaMod] = useState(0);
+  const [modifiers, setModifiers] = useState({});
 
   function handleStatChange(stat, value) {
-    setCharStats({ ...charStats, [stat]: value });
+    setCharStats({ ...charStats, [stat]: parseInt(value) || 0 });
   }
 
   function calculateModifier(stat) {
     return Math.floor((stat - 10) / 2);
   }
 
+  const handleRoll = (statName) => {
+    const newRoll = Math.ceil(Math.random() * 20) + modifiers[statName];
+    console.log(`Roll for ${statName.toUpperCase()}:`, newRoll);
+  };
+
   useEffect(() => {
-    setStrMod(calculateModifier(charStats.strength));
-    setDexMod(calculateModifier(charStats.dexterity));
-    setAgiMod(calculateModifier(charStats.agility));
-    setConMod(calculateModifier(charStats.constitution));
-    setWitMod(calculateModifier(charStats.wits));
-    setIntMod(calculateModifier(charStats.intelligence));
-    setWilMod(calculateModifier(charStats.willpower));
-    setChaMod(calculateModifier(charStats.charisma));
+    const newModifiers = {};
+    for (const [key, value] of Object.entries(charStats)) {
+      newModifiers[key] = calculateModifier(value);
+    }
+    setModifiers(newModifiers);
   }, [charStats]);
 
   return (
     <div>
-      Ability Scores
-      <div className="grid grid-cols-8 gap-4 text-center">
-        <div>STR</div>
-        <div>DEX</div>
-        <div>AGI</div>
-        <div>CON</div>
-        <div>WIT</div>
-        <div>INT</div>
-        <div>WP</div>
-        <div>CHA</div>
-        <div>
-          <input
-            type="number"
-            className="w-full max-w-xs rounded text-center"
-            value={charStats.strength}
-            onChange={(e) => handleStatChange("strength", e.target.value)}
-          />
-        </div>
-        <div>
-          <input
-            type="number"
-            className="w-full max-w-xs rounded text-center"
-            value={charStats.dexterity}
-            onChange={(e) => handleStatChange("dexterity", e.target.value)}
-          />
-        </div>
-        <div>
-          <input
-            type="number"
-            className="w-full max-w-xs rounded text-center"
-            value={charStats.agility}
-            onChange={(e) => handleStatChange("agility", e.target.value)}
-          />
-        </div>
-        <div>
-          <input
-            type="number"
-            className="w-full max-w-xs rounded text-center"
-            value={charStats.constitution}
-            onChange={(e) => handleStatChange("constitution", e.target.value)}
-          />
-        </div>
-        <div>
-          <input
-            type="number"
-            className="w-full max-w-xs rounded text-center"
-            value={charStats.wits}
-            onChange={(e) => handleStatChange("wits", e.target.value)}
-          />
-        </div>
-        <div>
-          <input
-            type="number"
-            className="w-full max-w-xs rounded text-center"
-            value={charStats.intelligence}
-            onChange={(e) => handleStatChange("intelligence", e.target.value)}
-          />
-        </div>
-        <div>
-          <input
-            type="number"
-            className="w-full max-w-xs rounded text-center"
-            value={charStats.willpower}
-            onChange={(e) => handleStatChange("willpower", e.target.value)}
-          />
-        </div>
-        <div>
-          <input
-            type="number"
-            className="w-full max-w-xs rounded text-center"
-            value={charStats.charisma}
-            onChange={(e) => handleStatChange("charisma", e.target.value)}
-          />
-        </div>
-        <div>
-          <p>{strMod}</p>
-        </div>
-        <div>
-          <p>{dexMod}</p>
-        </div>
-        <div>
-          <p>{agiMod}</p>
-        </div>
-        <div>
-          <p>{conMod}</p>
-        </div>
-        <div>
-          <p>{witMod}</p>
-        </div>
-        <div>
-          <p>{intMod}</p>
-        </div>
-        <div>
-          <p>{wilMod}</p>
-        </div>
-        <div>
-          <p>{chaMod}</p>
-        </div>
+      <h2 className="text-2xl font-bold">Ability Scores</h2>
+      <div className="grid grid-cols-8 gap-2 text-center">
+        {Object.entries(charStats).map(([statName, value]) => (
+          <React.Fragment key={statName}>
+            <div className="flex flex-col gap-2">
+              <div>{statName.toUpperCase().slice(0, 3)}</div>
+              <input
+                type="number"
+                className="w-full max-w-xs rounded text-center"
+                value={value}
+                onChange={(e) => handleStatChange(statName, e.target.value)}
+              />
+              <button
+                className="btn btn-sm"
+                onClick={() => handleRoll(statName)}
+              >
+                {modifiers[statName] !== undefined ? modifiers[statName] : 0}
+              </button>
+            </div>
+          </React.Fragment>
+        ))}
       </div>
     </div>
   );

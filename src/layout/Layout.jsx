@@ -1,4 +1,5 @@
 import React from "react";
+import AbilityScores from "../components/AbilityScores";
 
 const Layout = () => {
   return (
@@ -48,7 +49,9 @@ const Layout = () => {
             </div>
           </div>
         </div>
-        <div id="ability-scores-container"></div>
+        <div id="ability-scores-container">
+          <AbilityScores />
+        </div>
         <div id="skills-container"></div>
         <div id="talents-container"></div>
       </div>
